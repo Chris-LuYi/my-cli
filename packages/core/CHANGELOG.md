@@ -1,5 +1,11 @@
 # @my-cli/core
 
+## 0.3.0
+
+### Minor Changes
+
+- e7a6b91: Rename npm scope from @my-cli to @chrisluyi.
+
 ## 0.2.0
 
 ### Minor Changes
