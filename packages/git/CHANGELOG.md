@@ -1,5 +1,16 @@
 # @my-cli/git
 
+## 0.3.0
+
+### Minor Changes
+
+- e7a6b91: Rename npm scope from @my-cli to @chrisluyi.
+
+### Patch Changes
+
+- Updated dependencies [e7a6b91]
+  - @chrisluyi/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
