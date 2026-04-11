@@ -5,10 +5,14 @@
   "scripts": {
     "test": "bun test",
     "lint": "biome check .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "changeset": "changeset",
+    "version": "changeset version && bun install",
+    "release": "changeset publish"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4"
+    "@biomejs/biome": "1.9.4",
+    "@changesets/cli": "^2.30.0"
   },
   "trustedDependencies": ["@biomejs/biome"]
 }
