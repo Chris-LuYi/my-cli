@@ -1,0 +1,17 @@
+{
+  "name": "@my-cli/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.tsx",
+  "dependencies": {
+    "@my-cli/core": "workspace:*",
+    "@my-cli/git": "workspace:*",
+    "ink": "^5.0.0",
+    "react": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}
