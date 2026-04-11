@@ -38,9 +38,10 @@ export const GitWip: React.FC<CommandArgs> = ({ setExitCode }) => {
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => { if (status === 'done') exit(); }, [status, exit]);
+
   if (status === 'error') return <ErrorBox message={message} setExitCode={setExitCode} />;
   if (status === 'done') {
-    exit();
     return <Text color="green">WIP commit: {message}</Text>;
   }
   return <Text dimColor>Staging and committing...</Text>;

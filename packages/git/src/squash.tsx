@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Box } from 'ink';
+import { Text, Box, useApp } from 'ink';
 import TextInput from 'ink-text-input';
 import { runCommand, ErrorBox } from '@my-cli/core';
 import type { CommandArgs } from '@my-cli/core';
@@ -34,6 +34,7 @@ async function resolveBase(variant: SquashVariant, ref: string): Promise<{ base:
 }
 
 export const GitSquash: React.FC<CommandArgs> = ({ positional, setExitCode }) => {
+  const { exit } = useApp();
   const [phase, setPhase] = useState<'validating' | 'prompt' | 'squashing' | 'done' | 'error'>('validating');
   const [errorMsg, setErrorMsg] = useState('');
   const [commitMsg, setCommitMsg] = useState('');
@@ -84,6 +85,8 @@ export const GitSquash: React.FC<CommandArgs> = ({ positional, setExitCode }) =>
       setPhase('error');
     }
   };
+
+  useEffect(() => { if (phase === 'done') exit(); }, [phase, exit]);
 
   if (phase === 'error') return <ErrorBox message={errorMsg} setExitCode={setExitCode} />;
   if (phase === 'validating') return <Text dimColor>Validating...</Text>;
