@@ -11,5 +11,5 @@ Shared foundation for all domain packages.
 
 ## Notes
 
-- `ErrorBox` must call `useApp().exit(new Error(msg))` in a `useEffect` — not `process.exit()`
+- `ErrorBox` calls `setExitCode(1)` then `useApp().exit()` (no argument) in a `useEffect`. Both synchronously in one effect. Entry point reads `exitCode` after `waitUntilExit()` resolves and calls `process.exit(exitCode)`.
 - All domain packages depend on this package for shared types and components
