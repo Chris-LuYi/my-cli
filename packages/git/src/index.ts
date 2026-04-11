@@ -1,36 +1,36 @@
-import type { DomainRegistry } from '@my-cli/core';
-import { runGitLog } from './log';
-import { GitWip } from './wip';
-import { GitBranch } from './branch';
-import { GitSquash } from './squash';
+import type { DomainRegistry } from "@my-cli/core"
+import { GitBranch } from "./branch"
+import { runGitLog } from "./log"
+import { GitSquash } from "./squash"
+import { GitWip } from "./wip"
 
 export const gitRegistry: DomainRegistry = {
-  domain: 'git',
-  shellAlias: 'cgit',
+  domain: "git",
+  shellAlias: "cgit",
   commands: [
     {
-      name: 'log',
-      description: 'Pretty-printed git log with graph',
-      usage: 'cgit log',
+      name: "log",
+      description: "Pretty-printed git log with graph",
+      usage: "cgit log",
       run: runGitLog,
     },
     {
-      name: 'wip',
-      description: 'Stage all changes and commit as WIP [timestamp]',
-      usage: 'cgit wip',
+      name: "wip",
+      description: "Stage all changes and commit as WIP [timestamp]",
+      usage: "cgit wip",
       component: GitWip,
     },
     {
-      name: 'branch',
-      description: 'Create new branch from default, fetch latest',
-      usage: 'cgit branch <name>',
+      name: "branch",
+      description: "Create new branch from default, fetch latest",
+      usage: "cgit branch <name>",
       component: GitBranch,
     },
     {
-      name: 'squash',
-      description: 'Squash commits since tag/commit, or last n',
-      usage: 'cgit squash tag|commit|last <ref|n>',
+      name: "squash",
+      description: "Squash commits since tag/commit, or last n",
+      usage: "cgit squash tag|commit|last <ref|n>",
       component: GitSquash,
     },
   ],
-};
+}

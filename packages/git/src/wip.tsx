@@ -1,48 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { Text, useApp } from 'ink';
-import { runCommand, formatISOTimestamp, ErrorBox } from '@my-cli/core';
-import type { CommandArgs } from '@my-cli/core';
+import { ErrorBox, formatISOTimestamp, runCommand } from "@my-cli/core"
+import type { CommandArgs } from "@my-cli/core"
+import { Text, useApp } from "ink"
+import type React from "react"
+import { useEffect, useState } from "react"
 
 export const GitWip: React.FC<CommandArgs> = ({ setExitCode }) => {
-  const { exit } = useApp();
-  const [status, setStatus] = useState<'running' | 'done' | 'error'>('running');
-  const [message, setMessage] = useState('');
+  const { exit } = useApp()
+  const [status, setStatus] = useState<"running" | "done" | "error">("running")
+  const [message, setMessage] = useState("")
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
-        const addResult = await runCommand('git', ['add', '-A']);
+        const addResult = await runCommand("git", ["add", "-A"])
         if (addResult.exitCode !== 0) {
-          setMessage(addResult.stderr.trim() || 'git add failed');
-          setStatus('error');
-          return;
+          setMessage(addResult.stderr.trim() || "git add failed")
+          setStatus("error")
+          return
         }
 
-        const timestamp = formatISOTimestamp();
-        const commitMsg = `WIP ${timestamp}`;
-        const commitResult = await runCommand('git', ['commit', '-m', commitMsg]);
+        const timestamp = formatISOTimestamp()
+        const commitMsg = `WIP ${timestamp}`
+        const commitResult = await runCommand("git", [
+          "commit",
+          "-m",
+          commitMsg,
+        ])
         if (commitResult.exitCode !== 0) {
-          setMessage(commitResult.stderr.trim() || 'git commit failed');
-          setStatus('error');
-          return;
+          setMessage(commitResult.stderr.trim() || "git commit failed")
+          setStatus("error")
+          return
         }
 
-        const hashMatch = commitResult.stdout.match(/\[[\w/]+ ([a-f0-9]+)\]/);
-        const hash = hashMatch?.[1] ?? '';
-        setMessage(`${hash} ${commitMsg}`);
-        setStatus('done');
+        const hashMatch = commitResult.stdout.match(/\[[\w/]+ ([a-f0-9]+)\]/)
+        const hash = hashMatch?.[1] ?? ""
+        setMessage(`${hash} ${commitMsg}`)
+        setStatus("done")
       } catch (err) {
-        setMessage(err instanceof Error ? err.message : String(err));
-        setStatus('error');
+        setMessage(err instanceof Error ? err.message : String(err))
+        setStatus("error")
       }
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    })()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => { if (status === 'done') exit(); }, [status, exit]);
+  useEffect(() => {
+    if (status === "done") exit()
+  }, [status, exit])
 
-  if (status === 'error') return <ErrorBox message={message} setExitCode={setExitCode} />;
-  if (status === 'done') {
-    return <Text color="green">WIP commit: {message}</Text>;
+  if (status === "error")
+    return <ErrorBox message={message} setExitCode={setExitCode} />
+  if (status === "done") {
+    return <Text color="green">WIP commit: {message}</Text>
   }
-  return <Text dimColor>Staging and committing...</Text>;
-};
+  return <Text dimColor>Staging and committing...</Text>
+}
