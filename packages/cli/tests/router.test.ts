@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import type { DomainRegistry } from "@my-cli/core"
+import type { DomainRegistry } from "@chrisluyi/core"
 import { resolveRoute } from "../src/router"
 
 const stub: DomainRegistry = {

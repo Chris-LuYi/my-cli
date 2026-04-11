@@ -1,5 +1,5 @@
-import { ErrorBox, HelpTable } from "@my-cli/core"
-import { gitRegistry } from "@my-cli/git"
+import { ErrorBox, HelpTable } from "@chrisluyi/core"
+import { gitRegistry } from "@chrisluyi/git"
 import { render } from "ink"
 import React from "react"
 import { resolveRoute } from "./router"

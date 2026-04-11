@@ -1,4 +1,4 @@
-import type { DomainRegistry } from "@my-cli/core"
+import type { DomainRegistry } from "@chrisluyi/core"
 import { GitBranch } from "./branch"
 import { runGitLog } from "./log"
 import { GitSquash } from "./squash"

@@ -1,5 +1,5 @@
-import { ErrorBox, formatISOTimestamp, runCommand } from "@my-cli/core"
-import type { CommandArgs } from "@my-cli/core"
+import { ErrorBox, formatISOTimestamp, runCommand } from "@chrisluyi/core"
+import type { CommandArgs } from "@chrisluyi/core"
 import { Text, useApp } from "ink"
 import type React from "react"
 import { useEffect, useState } from "react"

@@ -1,4 +1,4 @@
-# @my-cli/git
+# @chrisluyi/git
 
 Git domain commands, exposed via `cgit` shell function.
 
@@ -22,4 +22,4 @@ Git domain commands, exposed via `cgit` shell function.
 
 ## Registry
 
-`src/index.ts` exports `gitRegistry: DomainRegistry` — imported by `@my-cli/cli`.
+`src/index.ts` exports `gitRegistry: DomainRegistry` — imported by `@chrisluyi/cli`.

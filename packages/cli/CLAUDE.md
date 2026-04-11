@@ -1,4 +1,4 @@
-# @my-cli/cli
+# @chrisluyi/cli
 
 Master entry point. Aggregates all domain registries and routes argv.
 

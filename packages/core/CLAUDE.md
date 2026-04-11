@@ -1,4 +1,4 @@
-# @my-cli/core
+# @chrisluyi/core
 
 Shared foundation for all domain packages.
 

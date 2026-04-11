@@ -1,11 +1,11 @@
 {
-  "name": "@my-cli/cli",
+  "name": "@chrisluyi/cli",
   "version": "0.2.0",
   "type": "module",
   "main": "./src/index.tsx",
   "dependencies": {
-    "@my-cli/core": "workspace:*",
-    "@my-cli/git": "workspace:*",
+    "@chrisluyi/core": "workspace:*",
+    "@chrisluyi/git": "workspace:*",
     "ink": "^5.0.0",
     "react": "^18.0.0"
   },

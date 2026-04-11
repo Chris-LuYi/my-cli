@@ -1,4 +1,4 @@
-import { spawnPassthrough } from "@my-cli/core"
+import { spawnPassthrough } from "@chrisluyi/core"
 
 const FORMAT =
   "%C(yellow)%h%C(reset) %C(green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)"

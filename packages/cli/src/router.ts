@@ -1,4 +1,4 @@
-import type { CommandEntry, DomainRegistry } from "@my-cli/core"
+import type { CommandEntry, DomainRegistry } from "@chrisluyi/core"
 
 export type RouteResult =
   | { type: "help-all" }
