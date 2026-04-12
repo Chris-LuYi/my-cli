@@ -20,8 +20,8 @@ jobs:
       - run: bunx biome check .
       - run: bun test
 
-  release:
-    name: Release
+  version-pr:
+    name: Create Version PR
     needs: ci
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -39,31 +39,11 @@ jobs:
         with:
           bun-version: "1.3.9"
       - run: bun install
-      - name: Create Release PR or Publish
-        continue-on-error: true
+      - name: Create Version PR
         uses: changesets/action@v1
         with:
-          publish: bun run release
           version: bun run version
           commit: "chore: release"
           title: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Auto-merge release PR
-        # GitHub suppresses workflow triggers for GITHUB_TOKEN events (loop prevention).
-        # The changesets bot uses GITHUB_TOKEN, so pull_request:opened never fires other workflows.
-        # Solution: merge directly in this job. Do NOT use --auto (requires repo setting).
-        # Safe because release only runs after ci passes (needs: ci).
-        run: |
-          for i in 1 2 3 4 5; do
-            PR=$(gh pr list --head changeset-release/master --json number --jq '.[0].number' 2>/dev/null)
-            if [ -n "$PR" ]; then
-              gh pr merge --merge "$PR" || true
-              break
-            fi
-            echo "PR not found yet, retrying in 5s (attempt $i/5)..."
-            sleep 5
-          done
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
