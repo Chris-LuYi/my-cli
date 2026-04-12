@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { validatePort, parseLsofKillOutput } from "../src/kill"
+import { parseLsofKillOutput, validatePort } from "../src/kill"
 
 describe("validatePort", () => {
   test("rejects non-numeric", () => {

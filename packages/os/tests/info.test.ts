@@ -5,7 +5,8 @@ describe("formatBytes", () => {
   test("bytes", () => expect(formatBytes(512)).toBe("512 B"))
   test("kilobytes", () => expect(formatBytes(4300)).toBe("4.2 KB"))
   test("megabytes", () => expect(formatBytes(5 * 1024 * 1024)).toBe("5.0 MB"))
-  test("gigabytes", () => expect(formatBytes(2 * 1024 * 1024 * 1024)).toBe("2.0 GB"))
+  test("gigabytes", () =>
+    expect(formatBytes(2 * 1024 * 1024 * 1024)).toBe("2.0 GB"))
 })
 
 describe("formatMode", () => {

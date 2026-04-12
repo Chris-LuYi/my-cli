@@ -8,7 +8,10 @@ describe("detectPlatform", () => {
   })
 
   test("detects WSL", () => {
-    const result = detectPlatform("linux", () => "Linux version 5.15 (microsoft-standard-WSL2)")
+    const result = detectPlatform(
+      "linux",
+      () => "Linux version 5.15 (microsoft-standard-WSL2)",
+    )
     expect(result).toEqual({ isWSL: true, isMac: false, isLinux: false })
   })
 

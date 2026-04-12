@@ -32,12 +32,21 @@ export function parseLsofOutput(
       // NAME column (second-to-last before "(LISTEN)") is like "*:3000"
       const nameCol = parts[parts.length - 2]
       const port = Number.parseInt(nameCol.split(":").pop() ?? "")
-      if (!Number.isFinite(pid) || !Number.isFinite(port) || port === 0) return []
+      if (!Number.isFinite(pid) || !Number.isFinite(port) || port === 0)
+        return []
       return [{ name, pid, port }]
     })
 }
 
-const SHELL_NAMES = new Set(["bash", "zsh", "sh", "fish", "csh", "tcsh", "dash"])
+const SHELL_NAMES = new Set([
+  "bash",
+  "zsh",
+  "sh",
+  "fish",
+  "csh",
+  "tcsh",
+  "dash",
+])
 
 export function isSubProcess(ppid: number, parentName: string): boolean {
   if (ppid <= 1) return false

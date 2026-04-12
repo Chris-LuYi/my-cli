@@ -1,5 +1,5 @@
-import { which } from "bun"
 import { runCommand } from "@chrisluyi/core"
+import { which } from "bun"
 import { isLinux, isMac, isWSL } from "./platform"
 
 const LINUX_TERMINALS: Array<[string, string[]]> = [

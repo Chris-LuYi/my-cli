@@ -1,5 +1,5 @@
-import { which } from "bun"
 import { runCommand } from "@chrisluyi/core"
+import { which } from "bun"
 
 /** Returns port number (1–65535) or null if invalid */
 export function validatePort(arg: string): number | null {
@@ -13,7 +13,10 @@ export function validatePort(arg: string): number | null {
  * lsof exits 1 with empty stdout when nothing listens — port free, not an error.
  * Returns pid string or null (port free).
  */
-export function parseLsofKillOutput(stdout: string, exitCode: number): string | null {
+export function parseLsofKillOutput(
+  stdout: string,
+  exitCode: number,
+): string | null {
   const pid = stdout.trim()
   if (exitCode !== 0 && !pid) return null
   if (pid) return pid

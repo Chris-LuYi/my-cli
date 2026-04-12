@@ -1,10 +1,7 @@
 import { runCommand } from "@chrisluyi/core"
 import { isMac, isWSL } from "./platform"
 
-export function getOpenCommand(
-  wsl: boolean,
-  mac: boolean,
-): [string, string[]] {
+export function getOpenCommand(wsl: boolean, mac: boolean): [string, string[]] {
   if (wsl) return ["explorer.exe", ["."]]
   if (mac) return ["open", ["."]]
   return ["xdg-open", ["."]]

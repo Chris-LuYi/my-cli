@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test"
 import {
-  parseLsofOutput,
-  isSubProcess,
-  formatRelativeTime,
   buildGroups,
+  formatRelativeTime,
+  isSubProcess,
+  parseLsofOutput,
 } from "../src/ports-data"
 
 describe("parseLsofOutput", () => {
@@ -75,8 +75,22 @@ describe("buildGroups", () => {
   ]
 
   const pidInfo = new Map([
-    [1234, { startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toString(), ppid: 1, parentName: "systemd" }],
-    [5678, { startedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toString(), ppid: 1, parentName: "systemd" }],
+    [
+      1234,
+      {
+        startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toString(),
+        ppid: 1,
+        parentName: "systemd",
+      },
+    ],
+    [
+      5678,
+      {
+        startedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toString(),
+        ppid: 1,
+        parentName: "systemd",
+      },
+    ],
   ])
 
   test("groups ports by pid", () => {
@@ -93,7 +107,10 @@ describe("buildGroups", () => {
 
   test("marks process as sub when ppid is user process", () => {
     const subPidInfo = new Map([
-      [1234, { startedAt: new Date().toString(), ppid: 999, parentName: "node" }],
+      [
+        1234,
+        { startedAt: new Date().toString(), ppid: 999, parentName: "node" },
+      ],
     ])
     const groups = buildGroups([entries[0]], subPidInfo)
     expect(groups[0].isMain).toBe(false)

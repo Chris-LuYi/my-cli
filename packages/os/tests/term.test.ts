@@ -8,15 +8,24 @@ const onlyGnome = (cmd: string) => cmd === "gnome-terminal"
 
 describe("getTermCommand", () => {
   test("WSL2 uses wt.exe", () => {
-    expect(getTermCommand(true, false, alwaysAvailable)).toEqual(["wt.exe", ["-d", "."]])
+    expect(getTermCommand(true, false, alwaysAvailable)).toEqual([
+      "wt.exe",
+      ["-d", "."],
+    ])
   })
 
   test("macOS uses open -a Terminal", () => {
-    expect(getTermCommand(false, true, alwaysAvailable)).toEqual(["open", ["-a", "Terminal", "."]])
+    expect(getTermCommand(false, true, alwaysAvailable)).toEqual([
+      "open",
+      ["-a", "Terminal", "."],
+    ])
   })
 
   test("Linux tries x-terminal-emulator first", () => {
-    expect(getTermCommand(false, false, alwaysAvailable)).toEqual(["x-terminal-emulator", ["."]])
+    expect(getTermCommand(false, false, alwaysAvailable)).toEqual([
+      "x-terminal-emulator",
+      ["."],
+    ])
   })
 
   test("Linux falls back through list", () => {

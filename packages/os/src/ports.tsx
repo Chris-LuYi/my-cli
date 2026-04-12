@@ -1,11 +1,11 @@
-import { which } from "bun"
-import { runCommand, ErrorBox } from "@chrisluyi/core"
+import { ErrorBox, runCommand } from "@chrisluyi/core"
 import type { CommandArgs } from "@chrisluyi/core"
-import { Text, Box, useApp, useInput } from "ink"
+import { which } from "bun"
+import { Box, Text, useApp, useInput } from "ink"
 import type React from "react"
-import { useEffect, useState, useCallback } from "react"
-import { parseLsofOutput, buildGroups } from "./ports-data"
-import type { ProcessGroup, PortEntry } from "./ports-data"
+import { useCallback, useEffect, useState } from "react"
+import { buildGroups, parseLsofOutput } from "./ports-data"
+import type { PortEntry, ProcessGroup } from "./ports-data"
 
 type Phase =
   | { status: "loading" }
@@ -36,13 +36,24 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
     ;(async () => {
       try {
         if (!which("lsof")) {
-          setPhase({ status: "error", message: "lsof is required but not installed" })
+          setPhase({
+            status: "error",
+            message: "lsof is required but not installed",
+          })
           return
         }
 
-        const lsof = await runCommand("lsof", ["-i", "-P", "-n", "-sTCP:LISTEN"])
+        const lsof = await runCommand("lsof", [
+          "-i",
+          "-P",
+          "-n",
+          "-sTCP:LISTEN",
+        ])
         if (lsof.exitCode !== 0 && !lsof.stdout.trim()) {
-          setPhase({ status: "error", message: lsof.stderr.trim() || "lsof failed" })
+          setPhase({
+            status: "error",
+            message: lsof.stderr.trim() || "lsof failed",
+          })
           return
         }
 
@@ -53,7 +64,10 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
         }
 
         const pids = [...new Set(raw.map((e) => e.pid))]
-        const pidInfo = new Map<number, { startedAt: string; ppid: number; parentName: string }>()
+        const pidInfo = new Map<
+          number,
+          { startedAt: string; ppid: number; parentName: string }
+        >()
 
         await Promise.all(
           pids.map(async (pid) => {
@@ -95,7 +109,9 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
     const newGroups = phase.groups.map((g) => ({
       ...g,
       ports: g.ports.map((p) =>
-        p.port === entry.port && p.pid === entry.pid ? { ...p, killed: true } : p,
+        p.port === entry.port && p.pid === entry.pid
+          ? { ...p, killed: true }
+          : p,
       ),
     }))
 
@@ -145,10 +161,14 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
               {g.startedAt}
               {"  "}
             </Text>
-            <Text color={g.isMain ? "green" : "yellow"}>{g.isMain ? "main" : "sub"}</Text>
+            <Text color={g.isMain ? "green" : "yellow"}>
+              {g.isMain ? "main" : "sub"}
+            </Text>
           </Text>
           {g.ports.map((p) => {
-            const flatIdx = ports.findIndex((fp) => fp.port === p.port && fp.pid === p.pid)
+            const flatIdx = ports.findIndex(
+              (fp) => fp.port === p.port && fp.pid === p.pid,
+            )
             const selected = flatIdx === phase.cursor
             return (
               <Text key={p.port}>

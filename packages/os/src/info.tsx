@@ -1,28 +1,30 @@
 import { statSync } from "node:fs"
 import { userInfo } from "node:os"
 import path from "node:path"
-import { runCommand, ErrorBox } from "@chrisluyi/core"
+import { ErrorBox, runCommand } from "@chrisluyi/core"
 import type { CommandArgs } from "@chrisluyi/core"
-import { Text, Box, useApp } from "ink"
+import { Box, Text, useApp } from "ink"
 import type React from "react"
 import { useEffect, useState } from "react"
 
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  if (bytes < 1024 * 1024 * 1024)
+    return `${(bytes / 1024 / 1024).toFixed(1)} MB`
   return `${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB`
 }
 
-const TYPE_BITS: Record<number, string> = {
-  0o100000: "-",
-  0o040000: "d",
-  0o120000: "l",
+function getTypeChar(mode: number): string | undefined {
+  const t = mode & 0o170000
+  if (t === 0o100000) return "-"
+  if (t === 0o040000) return "d"
+  if (t === 0o120000) return "l"
+  return undefined
 }
 
 export function formatMode(mode: number): string {
-  const typeMask = mode & 0o170000
-  const typeChar = TYPE_BITS[typeMask]
+  const typeChar = getTypeChar(mode)
   if (!typeChar) return `0${(mode & 0o777).toString(8)}`
 
   const perm = mode & 0o777
@@ -80,10 +82,19 @@ async function gatherInfo(target: string): Promise<InfoData> {
 
   if (stat.isDirectory()) {
     const duResult = await runCommand("du", ["-sh", target])
-    const totalSize = duResult.exitCode === 0 ? parseDuOutput(duResult.stdout) : "unknown"
+    const totalSize =
+      duResult.exitCode === 0 ? parseDuOutput(duResult.stdout) : "unknown"
 
-    const findResult = await runCommand("find", [target, "-maxdepth", "1", "-mindepth", "1"])
-    const entries = findResult.stdout.trim() ? findResult.stdout.trim().split("\n") : []
+    const findResult = await runCommand("find", [
+      target,
+      "-maxdepth",
+      "1",
+      "-mindepth",
+      "1",
+    ])
+    const entries = findResult.stdout.trim()
+      ? findResult.stdout.trim().split("\n")
+      : []
     let files = 0
     let dirs = 0
     for (const e of entries) {
@@ -94,7 +105,14 @@ async function gatherInfo(target: string): Promise<InfoData> {
       }
     }
 
-    return { kind: "dir", label, files, dirs, totalSize, modified: formatDate(stat.mtime) }
+    return {
+      kind: "dir",
+      label,
+      files,
+      dirs,
+      totalSize,
+      modified: formatDate(stat.mtime),
+    }
   }
 
   const cu = userInfo()
@@ -154,12 +172,36 @@ export const OsInfo: React.FC<CommandArgs> = ({ positional, setExitCode }) => {
       <Box flexDirection="column" paddingY={1}>
         <Text bold>File: {data.label}</Text>
         <Text />
-        <Text>{"  "}<Text dimColor>{"Size".padEnd(col)}</Text>{data.size}</Text>
-        <Text>{"  "}<Text dimColor>{"Permissions".padEnd(col)}</Text>{data.mode}</Text>
-        <Text>{"  "}<Text dimColor>{"Owner".padEnd(col)}</Text>{data.owner}</Text>
-        <Text>{"  "}<Text dimColor>{"Created".padEnd(col)}</Text>{data.created}</Text>
-        <Text>{"  "}<Text dimColor>{"Modified".padEnd(col)}</Text>{data.modified}</Text>
-        <Text>{"  "}<Text dimColor>{"Accessed".padEnd(col)}</Text>{data.accessed}</Text>
+        <Text>
+          {"  "}
+          <Text dimColor>{"Size".padEnd(col)}</Text>
+          {data.size}
+        </Text>
+        <Text>
+          {"  "}
+          <Text dimColor>{"Permissions".padEnd(col)}</Text>
+          {data.mode}
+        </Text>
+        <Text>
+          {"  "}
+          <Text dimColor>{"Owner".padEnd(col)}</Text>
+          {data.owner}
+        </Text>
+        <Text>
+          {"  "}
+          <Text dimColor>{"Created".padEnd(col)}</Text>
+          {data.created}
+        </Text>
+        <Text>
+          {"  "}
+          <Text dimColor>{"Modified".padEnd(col)}</Text>
+          {data.modified}
+        </Text>
+        <Text>
+          {"  "}
+          <Text dimColor>{"Accessed".padEnd(col)}</Text>
+          {data.accessed}
+        </Text>
       </Box>
     )
   }
@@ -168,10 +210,26 @@ export const OsInfo: React.FC<CommandArgs> = ({ positional, setExitCode }) => {
     <Box flexDirection="column" paddingY={1}>
       <Text bold>Directory: {data.label}</Text>
       <Text />
-      <Text>{"  "}<Text dimColor>{"Files".padEnd(col)}</Text>{data.files}</Text>
-      <Text>{"  "}<Text dimColor>{"Directories".padEnd(col)}</Text>{data.dirs}</Text>
-      <Text>{"  "}<Text dimColor>{"Total size".padEnd(col)}</Text>{data.totalSize}</Text>
-      <Text>{"  "}<Text dimColor>{"Modified".padEnd(col)}</Text>{data.modified}</Text>
+      <Text>
+        {"  "}
+        <Text dimColor>{"Files".padEnd(col)}</Text>
+        {data.files}
+      </Text>
+      <Text>
+        {"  "}
+        <Text dimColor>{"Directories".padEnd(col)}</Text>
+        {data.dirs}
+      </Text>
+      <Text>
+        {"  "}
+        <Text dimColor>{"Total size".padEnd(col)}</Text>
+        {data.totalSize}
+      </Text>
+      <Text>
+        {"  "}
+        <Text dimColor>{"Modified".padEnd(col)}</Text>
+        {data.modified}
+      </Text>
     </Box>
   )
 }
