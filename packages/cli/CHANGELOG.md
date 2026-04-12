@@ -1,5 +1,13 @@
 # @my-cli/cli
 
+## 0.4.1
+
+### Patch Changes
+
+- e546a4f: Add @chrisluyi/os package with cos open, cos term, cos ports, cos kill, and cos info commands.
+- Updated dependencies [e546a4f]
+  - @chrisluyi/os@0.2.0
+
 ## 0.4.0
 
 ### Minor Changes
