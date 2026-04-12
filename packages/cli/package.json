@@ -6,6 +6,7 @@
   "dependencies": {
     "@chrisluyi/core": "workspace:*",
     "@chrisluyi/git": "workspace:*",
+    "@chrisluyi/os": "workspace:*",
     "ink": "^5.0.0",
     "react": "^18.0.0"
   },

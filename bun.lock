@@ -11,10 +11,11 @@
     },
     "packages/cli": {
       "name": "@chrisluyi/cli",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "dependencies": {
         "@chrisluyi/core": "workspace:*",
         "@chrisluyi/git": "workspace:*",
+        "@chrisluyi/os": "workspace:*",
         "ink": "^5.0.0",
         "react": "^18.0.0",
       },
@@ -25,7 +26,7 @@
     },
     "packages/core": {
       "name": "@chrisluyi/core",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "dependencies": {
         "ink": "^5.0.0",
         "ink-spinner": "^5.0.0",
@@ -38,11 +39,24 @@
     },
     "packages/git": {
       "name": "@chrisluyi/git",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "dependencies": {
         "@chrisluyi/core": "workspace:*",
         "ink": "^5.0.0",
         "ink-text-input": "^6.0.0",
+        "react": "^18.0.0",
+      },
+      "devDependencies": {
+        "@types/react": "^18.0.0",
+        "typescript": "^5.0.0",
+      },
+    },
+    "packages/os": {
+      "name": "@chrisluyi/os",
+      "version": "0.1.0",
+      "dependencies": {
+        "@chrisluyi/core": "workspace:*",
+        "ink": "^5.0.0",
         "react": "^18.0.0",
       },
       "devDependencies": {
@@ -116,6 +130,8 @@
     "@chrisluyi/core": ["@chrisluyi/core@workspace:packages/core"],
 
     "@chrisluyi/git": ["@chrisluyi/git@workspace:packages/git"],
+
+    "@chrisluyi/os": ["@chrisluyi/os@workspace:packages/os"],
 
     "@inquirer/external-editor": ["@inquirer/external-editor@1.0.3", "", { "dependencies": { "chardet": "^2.1.1", "iconv-lite": "^0.7.0" }, "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-RWbSrDiYmO4LbejWY7ttpxczuwQyZLBUyygsA9Nsv95hpzUWwnNTVQmAq3xuh7vNwCp07UTmE5i11XAEExx4RA=="],
 

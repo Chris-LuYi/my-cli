@@ -1,10 +1,11 @@
 import { ErrorBox, HelpTable } from "@chrisluyi/core"
 import { gitRegistry } from "@chrisluyi/git"
+import { osRegistry } from "@chrisluyi/os"
 import { render } from "ink"
 import React from "react"
 import { resolveRoute } from "./router"
 
-const registries = [gitRegistry]
+const registries = [gitRegistry, osRegistry]
 const args = process.argv.slice(2)
 const route = resolveRoute(args, registries)
 

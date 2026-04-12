@@ -14,6 +14,7 @@ else
 
 $MARKER
 cgit() { bun run "$REPO_DIR/packages/cli/src/index.tsx" git "\$@"; }
+cos() { bun run "$REPO_DIR/packages/cli/src/index.tsx" os "\$@"; }
 alias my-cli="bun run \"$REPO_DIR/packages/cli/src/index.tsx\""
 EOF
   echo "Shell functions added to ~/.bashrc."
