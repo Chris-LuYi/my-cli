@@ -1,7 +1,9 @@
 import type { DomainRegistry } from "@chrisluyi/core"
 import { GitBranch } from "./branch"
 import { runGitLog } from "./log"
+import { runGitPush } from "./push"
 import { GitSquash } from "./squash"
+import { GitV2 } from "./v2"
 import { GitWip } from "./wip"
 
 export const gitRegistry: DomainRegistry = {
@@ -31,6 +33,18 @@ export const gitRegistry: DomainRegistry = {
       description: "Squash commits since tag/commit, or last n",
       usage: "cgit squash tag|commit|last <ref|n>",
       component: GitSquash,
+    },
+    {
+      name: "v2",
+      description: "Create next version branch from current (v2, v3, …)",
+      usage: "cgit v2",
+      component: GitV2,
+    },
+    {
+      name: "push",
+      description: "Push current branch to origin, set upstream",
+      usage: "cgit push",
+      run: runGitPush,
     },
   ],
 }
