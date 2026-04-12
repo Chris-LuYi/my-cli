@@ -1,5 +1,11 @@
 # @my-cli/git
 
+## 0.4.0
+
+### Minor Changes
+
+- 8c29015: Add `cgit v2` (create next version branch) and `cgit push` (push to origin with upstream set) commands.
+
 ## 0.3.0
 
 ### Minor Changes
