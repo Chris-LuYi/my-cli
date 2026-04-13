@@ -39,33 +39,20 @@ jobs:
         with:
           bun-version: "1.3.9"
       - run: bun install
-      - name: Create Release PR or Publish
-        id: changesets
-        continue-on-error: true
-        uses: changesets/action@v1
-        with:
-          publish: bun run release
-          version: bun run version
-          commit: "chore: release"
-          title: "chore: version packages"
+      - name: Configure git
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+      - name: Version and publish
+        # Apply version bumps and publish in a single step — no PR needed.
+        # GITHUB_TOKEN push suppresses further CI runs, but publish already
+        # happened inline so no second trigger is needed.
+        # If no changesets exist both steps are no-ops and exit 0.
+        run: |
+          bun run version
+          git add -A
+          git diff --staged --quiet || (git commit -m "chore: release" && git push)
+          bun run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Auto-merge release PR
-        # Runs after changesets creates/updates the PR. The pull_request event
-        # from GITHUB_TOKEN doesn't trigger other workflows (GitHub loop prevention),
-        # so we merge directly here. The next push (from the merged commit) triggers
-        # CI again; changesets/action finds no pending changesets and runs publish.
-        # Retry loop: GitHub API may not expose the new PR immediately after creation.
-        run: |
-          for i in 1 2 3 4 5; do
-            PR=$(gh pr list --head changeset-release/master --json number --jq '.[0].number' 2>/dev/null)
-            if [ -n "$PR" ]; then
-              gh pr merge --merge "$PR" || true
-              break
-            fi
-            echo "PR not found yet, retrying in 5s (attempt $i/5)..."
-            sleep 5
-          done
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
