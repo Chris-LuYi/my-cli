@@ -1,5 +1,11 @@
 # @chrisluyi/os
 
+## 0.3.1
+
+### Patch Changes
+
+- abdffbe: Internal: no changes, CI workflow release test.
+
 ## 0.3.0
 
 ### Minor Changes
