@@ -1,5 +1,11 @@
 # @chrisluyi/os
 
+## 0.3.2
+
+### Patch Changes
+
+- b75cb63: Fix: resolve workspace:\* dependencies to real semver ranges before npm publish.
+
 ## 0.3.1
 
 ### Patch Changes

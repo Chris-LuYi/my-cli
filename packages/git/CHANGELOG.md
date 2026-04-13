@@ -1,5 +1,11 @@
 # @my-cli/git
 
+## 0.4.1
+
+### Patch Changes
+
+- b75cb63: Fix: resolve workspace:\* dependencies to real semver ranges before npm publish.
+
 ## 0.4.0
 
 ### Minor Changes
