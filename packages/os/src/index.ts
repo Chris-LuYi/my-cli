@@ -1,4 +1,6 @@
 import type { DomainRegistry } from "@chrisluyi/core"
+import { OsClipboard } from "./cb"
+import { runOsCpwd } from "./cpwd"
 import { OsInfo } from "./info"
 import { runOsKill } from "./kill"
 import { runOsOpen } from "./open"
@@ -38,6 +40,18 @@ export const osRegistry: DomainRegistry = {
       description: "Show file or directory metadata",
       usage: "cos info [path]",
       component: OsInfo,
+    },
+    {
+      name: "cpwd",
+      description: "Copy current directory path to clipboard and history",
+      usage: "cos cpwd",
+      run: runOsCpwd,
+    },
+    {
+      name: "cb",
+      description: "Clipboard history panel — pick to copy; cb push <text> to add",
+      usage: "cos cb [push <text>]",
+      component: OsClipboard,
     },
   ],
 }
