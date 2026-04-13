@@ -35,7 +35,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org"
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: "1.3.9"
@@ -44,16 +43,22 @@ jobs:
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-      - name: Version and publish
-        # Apply version bumps and publish in a single step — no PR needed.
-        # GITHUB_TOKEN push suppresses further CI runs, but publish already
-        # happened inline so no second trigger is needed.
-        # If no changesets exist both steps are no-ops and exit 0.
+      - name: Version
+        # Apply version bumps inline — no PR needed.
+        # If no changesets exist, this is a no-op and publish finds nothing new.
         run: |
           bun run version
           git add -A
           git diff --staged --quiet || (git commit -m "chore: release" && git push)
-          bun run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish
+        # changesets/action handles: npm publish + git tags + GitHub Releases.
+        # With no version: configured it only publishes packages whose local
+        # version exceeds what's on npm (i.e. the ones just versioned above).
+        uses: changesets/action@v1
+        with:
+          publish: bun run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
