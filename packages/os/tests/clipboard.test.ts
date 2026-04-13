@@ -12,10 +12,7 @@ import { join } from "node:path"
 // We test the pure/logic functions directly.
 // File-system functions are tested with a temp dir by monkey-patching the module's
 // CLIP_DIR constant — instead, we duplicate the logic inline for unit tests.
-import {
-  formatRelativeTime,
-  getClipboardCommand,
-} from "../src/clipboard-data"
+import { formatRelativeTime, getClipboardCommand } from "../src/clipboard-data"
 
 describe("getClipboardCommand", () => {
   test("WSL returns clip.exe", () => {

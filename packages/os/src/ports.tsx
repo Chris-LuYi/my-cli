@@ -31,7 +31,6 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
   const { exit } = useApp()
   const [phase, setPhase] = useState<Phase>({ status: "loading" })
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-once effect
   useEffect(() => {
     ;(async () => {
       try {

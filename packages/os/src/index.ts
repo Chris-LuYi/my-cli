@@ -49,7 +49,8 @@ export const osRegistry: DomainRegistry = {
     },
     {
       name: "cb",
-      description: "Clipboard history panel — pick to copy; cb push <text> to add",
+      description:
+        "Clipboard history panel — pick to copy; cb push <text> to add",
       usage: "cos cb [push <text>]",
       component: OsClipboard,
     },
