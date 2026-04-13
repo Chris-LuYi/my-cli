@@ -1,5 +1,12 @@
 # @my-cli/cli
 
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [a5d33f0]
+  - @chrisluyi/os@0.3.0
+
 ## 0.4.1
 
 ### Patch Changes
