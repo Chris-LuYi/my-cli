@@ -1,5 +1,11 @@
 # @chrisluyi/os
 
+## 0.3.3
+
+### Patch Changes
+
+- 571be25: fix: treat lsof exit 1 with no stderr as empty state, not an error
+
 ## 0.3.2
 
 ### Patch Changes
