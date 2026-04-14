@@ -3,34 +3,50 @@ import {
   buildGroups,
   formatRelativeTime,
   isSubProcess,
-  parseLsofOutput,
+  parseSsOutput,
 } from "../src/ports-data"
 
-describe("parseLsofOutput", () => {
-  const sample = `COMMAND   PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-node     1234  chris   22u  IPv4  12345      0t0  TCP *:3000 (LISTEN)
-node     1234  chris   24u  IPv4  12346      0t0  TCP *:3001 (LISTEN)
-postgres 5678  chris   10u  IPv6  12347      0t0  TCP *:5432 (LISTEN)`
+describe("parseSsOutput", () => {
+  const sample = `State  Recv-Q Send-Q  Local Address:Port Peer Address:Port Process
+LISTEN 0      511     0.0.0.0:3000        0.0.0.0:*          users:(("node",pid=1234,fd=10))
+LISTEN 0      511     0.0.0.0:3001        0.0.0.0:*          users:(("node",pid=1234,fd=12))
+LISTEN 0      128     0.0.0.0:5432        0.0.0.0:*          users:(("postgres",pid=5678,fd=4))`
 
   test("parses multiple entries", () => {
-    const result = parseLsofOutput(sample)
+    const result = parseSsOutput(sample)
     expect(result).toHaveLength(3)
   })
 
   test("extracts port correctly", () => {
-    const result = parseLsofOutput(sample)
+    const result = parseSsOutput(sample)
     expect(result[0].port).toBe(3000)
     expect(result[2].port).toBe(5432)
   })
 
   test("extracts pid correctly", () => {
-    const result = parseLsofOutput(sample)
+    const result = parseSsOutput(sample)
     expect(result[0].pid).toBe(1234)
   })
 
+  test("extracts process name correctly", () => {
+    const result = parseSsOutput(sample)
+    expect(result[0].name).toBe("node")
+    expect(result[2].name).toBe("postgres")
+  })
+
+  test("handles missing process column (system-owned sockets)", () => {
+    const noProc = `State  Recv-Q Send-Q  Local Address:Port Peer Address:Port Process
+LISTEN 0      4096    127.0.0.53%lo:53        0.0.0.0:*          `
+    const result = parseSsOutput(noProc)
+    expect(result).toHaveLength(1)
+    expect(result[0].pid).toBe(0)
+    expect(result[0].name).toBe("unknown")
+    expect(result[0].port).toBe(53)
+  })
+
   test("returns empty array for empty input", () => {
-    expect(parseLsofOutput("")).toHaveLength(0)
-    expect(parseLsofOutput("COMMAND PID USER")).toHaveLength(0)
+    expect(parseSsOutput("")).toHaveLength(0)
+    expect(parseSsOutput("State Recv-Q Send-Q")).toHaveLength(0)
   })
 })
 

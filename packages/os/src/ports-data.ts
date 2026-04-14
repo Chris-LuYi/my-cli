@@ -15,8 +15,12 @@ export type ProcessGroup = {
   ports: PortEntry[]
 }
 
-/** Parse `lsof -i -P -n -sTCP:LISTEN` output */
-export function parseLsofOutput(
+/** Parse `ss -tlnp` output into port entries.
+ *  Process column format: `users:(("node",pid=1234,fd=10))`
+ *  When unprivileged, system-owned sockets have no process column — those are
+ *  included with pid=0/name="unknown" so the user can still see all ports.
+ */
+export function parseSsOutput(
   output: string,
 ): Array<{ name: string; pid: number; port: number }> {
   if (!output.trim()) return []
@@ -25,15 +29,21 @@ export function parseLsofOutput(
     .split("\n")
     .slice(1) // skip header
     .flatMap((line) => {
-      const parts = line.trim().split(/\s+/)
-      if (parts.length < 9) return []
-      const name = parts[0]
-      const pid = Number.parseInt(parts[1])
-      // NAME column (second-to-last before "(LISTEN)") is like "*:3000"
-      const nameCol = parts[parts.length - 2]
-      const port = Number.parseInt(nameCol.split(":").pop() ?? "")
-      if (!Number.isFinite(pid) || !Number.isFinite(port) || port === 0)
-        return []
+      const trimmed = line.trim()
+      if (!trimmed || !trimmed.startsWith("LISTEN")) return []
+
+      // Local Address:Port is the 4th column (0-indexed)
+      const parts = trimmed.split(/\s+/)
+      const addrPort = parts[3] ?? ""
+      // Port is after the last colon (handles IPv6 like [::]:3000)
+      const port = Number.parseInt(addrPort.split(":").pop() ?? "")
+      if (!Number.isFinite(port) || port === 0) return []
+
+      // Extract pid and name from users:(("name",pid=NNN,...))
+      const usersMatch = trimmed.match(/users:\(\("([^"]+)",pid=(\d+)/)
+      const name = usersMatch ? usersMatch[1] : "unknown"
+      const pid = usersMatch ? Number.parseInt(usersMatch[2]) : 0
+
       return [{ name, pid, port }]
     })
 }

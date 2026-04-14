@@ -4,7 +4,7 @@ import { which } from "bun"
 import { Box, Text, useApp, useInput } from "ink"
 import type React from "react"
 import { useCallback, useEffect, useState } from "react"
-import { buildGroups, parseLsofOutput } from "./ports-data"
+import { buildGroups, parseSsOutput } from "./ports-data"
 import type { PortEntry, ProcessGroup } from "./ports-data"
 
 type Phase =
@@ -34,36 +34,31 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
   useEffect(() => {
     ;(async () => {
       try {
-        if (!which("lsof")) {
+        if (!which("ss")) {
           setPhase({
             status: "error",
-            message: "lsof is required but not installed",
+            message: "ss is required but not installed (install iproute2)",
           })
           return
         }
 
-        const lsof = await runCommand("lsof", [
-          "-i",
-          "-P",
-          "-n",
-          "-sTCP:LISTEN",
-        ])
-        if (lsof.exitCode !== 0 && !lsof.stdout.trim()) {
-          if (lsof.stderr.trim()) {
-            setPhase({ status: "error", message: lsof.stderr.trim() })
-          } else {
-            setPhase({ status: "empty" })
-          }
+        const ss = await runCommand("ss", ["-tlnp"])
+        if (ss.exitCode !== 0) {
+          setPhase({
+            status: "error",
+            message: ss.stderr.trim() || "ss failed",
+          })
           return
         }
 
-        const raw = parseLsofOutput(lsof.stdout)
+        const raw = parseSsOutput(ss.stdout)
         if (raw.length === 0) {
           setPhase({ status: "empty" })
           return
         }
 
-        const pids = [...new Set(raw.map((e) => e.pid))]
+        // Only fetch ps info for real pids (pid=0 means no permission / unknown)
+        const pids = [...new Set(raw.map((e) => e.pid).filter((p) => p > 0))]
         const pidInfo = new Map<
           number,
           { startedAt: string; ppid: number; parentName: string }
@@ -149,14 +144,14 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
       <Text bold>Listening ports</Text>
       <Text />
       {phase.groups.map((g) => (
-        <Box key={g.pid} flexDirection="column" marginBottom={1}>
+        <Box key={`${g.pid}-${g.name}`} flexDirection="column" marginBottom={1}>
           <Text>
             {"  "}
             <Text bold>{g.name.padEnd(16)}</Text>
             {"  "}
             <Text dimColor>
               {"pid "}
-              {g.pid}
+              {g.pid > 0 ? g.pid : "?"}
               {"  started "}
               {g.startedAt}
               {"  "}
