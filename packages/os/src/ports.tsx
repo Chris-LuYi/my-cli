@@ -49,10 +49,11 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
           "-sTCP:LISTEN",
         ])
         if (lsof.exitCode !== 0 && !lsof.stdout.trim()) {
-          setPhase({
-            status: "error",
-            message: lsof.stderr.trim() || "lsof failed",
-          })
+          if (lsof.stderr.trim()) {
+            setPhase({ status: "error", message: lsof.stderr.trim() })
+          } else {
+            setPhase({ status: "empty" })
+          }
           return
         }
 
