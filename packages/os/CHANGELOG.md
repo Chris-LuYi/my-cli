@@ -1,5 +1,11 @@
 # @chrisluyi/os
 
+## 0.3.4
+
+### Patch Changes
+
+- 44870c1: fix: switch ports backend from lsof to ss for WSL2 compatibility
+
 ## 0.3.3
 
 ### Patch Changes

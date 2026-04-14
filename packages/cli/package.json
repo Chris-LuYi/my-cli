@@ -1,6 +1,6 @@
 {
   "name": "@chrisluyi/cli",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "type": "module",
   "main": "./src/index.tsx",
   "dependencies": {
