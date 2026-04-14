@@ -1,5 +1,11 @@
 # @chrisluyi/os
 
+## 0.3.5
+
+### Patch Changes
+
+- c9756bd: fix: unique React keys for ports using address:port, fix duplicate group key for system sockets
+
 ## 0.3.4
 
 ### Patch Changes
