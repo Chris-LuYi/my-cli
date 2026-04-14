@@ -17,9 +17,10 @@ LISTEN 0      128     0.0.0.0:5432        0.0.0.0:*          users:(("postgres",
     expect(result).toHaveLength(3)
   })
 
-  test("extracts port correctly", () => {
+  test("extracts port and address correctly", () => {
     const result = parseSsOutput(sample)
     expect(result[0].port).toBe(3000)
+    expect(result[0].address).toBe("0.0.0.0")
     expect(result[2].port).toBe(5432)
   })
 
@@ -42,6 +43,7 @@ LISTEN 0      4096    127.0.0.53%lo:53        0.0.0.0:*          `
     expect(result[0].pid).toBe(0)
     expect(result[0].name).toBe("unknown")
     expect(result[0].port).toBe(53)
+    expect(result[0].address).toBe("127.0.0.53%lo")
   })
 
   test("returns empty array for empty input", () => {
@@ -85,9 +87,9 @@ describe("formatRelativeTime", () => {
 
 describe("buildGroups", () => {
   const entries = [
-    { name: "node", pid: 1234, port: 3000 },
-    { name: "node", pid: 1234, port: 3001 },
-    { name: "postgres", pid: 5678, port: 5432 },
+    { name: "node", pid: 1234, port: 3000, address: "0.0.0.0" },
+    { name: "node", pid: 1234, port: 3001, address: "0.0.0.0" },
+    { name: "postgres", pid: 5678, port: 5432, address: "127.0.0.1" },
   ]
 
   const pidInfo = new Map([
@@ -128,7 +130,7 @@ describe("buildGroups", () => {
         { startedAt: new Date().toString(), ppid: 999, parentName: "node" },
       ],
     ])
-    const groups = buildGroups([entries[0]], subPidInfo)
+    const groups = buildGroups([{ ...entries[0] }], subPidInfo)
     expect(groups[0].isMain).toBe(false)
   })
 })

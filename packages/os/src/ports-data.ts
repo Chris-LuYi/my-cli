@@ -1,5 +1,6 @@
 export type PortEntry = {
   port: number
+  address: string
   pid: number
   name: string
   startedAt: string
@@ -22,7 +23,7 @@ export type ProcessGroup = {
  */
 export function parseSsOutput(
   output: string,
-): Array<{ name: string; pid: number; port: number }> {
+): Array<{ name: string; pid: number; port: number; address: string }> {
   if (!output.trim()) return []
   return output
     .trim()
@@ -36,7 +37,9 @@ export function parseSsOutput(
       const parts = trimmed.split(/\s+/)
       const addrPort = parts[3] ?? ""
       // Port is after the last colon (handles IPv6 like [::]:3000)
-      const port = Number.parseInt(addrPort.split(":").pop() ?? "")
+      const lastColon = addrPort.lastIndexOf(":")
+      const port = Number.parseInt(addrPort.slice(lastColon + 1))
+      const address = addrPort.slice(0, lastColon) || "*"
       if (!Number.isFinite(port) || port === 0) return []
 
       // Extract pid and name from users:(("name",pid=NNN,...))
@@ -44,7 +47,7 @@ export function parseSsOutput(
       const name = usersMatch ? usersMatch[1] : "unknown"
       const pid = usersMatch ? Number.parseInt(usersMatch[2]) : 0
 
-      return [{ name, pid, port }]
+      return [{ name, pid, port, address }]
     })
 }
 
@@ -79,18 +82,20 @@ export function formatRelativeTime(lstart: string): string {
 }
 
 export function buildGroups(
-  entries: Array<{ name: string; pid: number; port: number }>,
+  entries: Array<{ name: string; pid: number; port: number; address: string }>,
   pidInfo: Map<number, { startedAt: string; ppid: number; parentName: string }>,
 ): ProcessGroup[] {
-  const groupMap = new Map<number, ProcessGroup>()
+  // Group by "pid:name" so multiple system sockets (pid=0) don't collapse into one group
+  const groupMap = new Map<string, ProcessGroup>()
 
   for (const entry of entries) {
     const info = pidInfo.get(entry.pid)
     const startedAt = info ? formatRelativeTime(info.startedAt) : "unknown"
     const sub = info ? isSubProcess(info.ppid, info.parentName) : false
+    const groupKey = `${entry.pid}:${entry.name}`
 
-    if (!groupMap.has(entry.pid)) {
-      groupMap.set(entry.pid, {
+    if (!groupMap.has(groupKey)) {
+      groupMap.set(groupKey, {
         name: entry.name,
         pid: entry.pid,
         startedAt,
@@ -100,8 +105,9 @@ export function buildGroups(
     }
 
     // biome-ignore lint/style/noNonNullAssertion: just inserted above
-    groupMap.get(entry.pid)!.ports.push({
+    groupMap.get(groupKey)!.ports.push({
       port: entry.port,
+      address: entry.address,
       pid: entry.pid,
       name: entry.name,
       startedAt,

@@ -143,8 +143,12 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
     <Box flexDirection="column" paddingY={1}>
       <Text bold>Listening ports</Text>
       <Text />
-      {phase.groups.map((g) => (
-        <Box key={`${g.pid}-${g.name}`} flexDirection="column" marginBottom={1}>
+      {phase.groups.map((g, gi) => (
+        <Box
+          key={`${gi}-${g.pid}-${g.name}`}
+          flexDirection="column"
+          marginBottom={1}
+        >
           <Text>
             {"  "}
             <Text bold>{g.name.padEnd(16)}</Text>
@@ -162,11 +166,14 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
           </Text>
           {g.ports.map((p) => {
             const flatIdx = ports.findIndex(
-              (fp) => fp.port === p.port && fp.pid === p.pid,
+              (fp) =>
+                fp.address === p.address &&
+                fp.port === p.port &&
+                fp.pid === p.pid,
             )
             const selected = flatIdx === phase.cursor
             return (
-              <Text key={p.port}>
+              <Text key={`${p.address}:${p.port}`}>
                 {"  "}
                 {selected ? <Text color="cyan">{"● "}</Text> : "  "}
                 {p.killed ? (
@@ -181,6 +188,11 @@ export const OsPorts: React.FC<CommandArgs> = ({ setExitCode }) => {
                   </Text>
                 ) : (
                   <Text color={selected ? "cyan" : undefined}>
+                    {p.address !== "*" && p.address !== "0.0.0.0" ? (
+                      <Text dimColor>{p.address}</Text>
+                    ) : (
+                      ""
+                    )}
                     {":"}
                     {p.port}
                     {p.isSub ? <Text dimColor>{"  (sub)"}</Text> : ""}
